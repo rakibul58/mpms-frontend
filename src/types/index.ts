@@ -1,5 +1,5 @@
 // User types
-export type UserRole = "admin" | "manager" | "member";
+export type UserRole = "manager" | "member";
 
 export interface IUser {
   _id: string;
@@ -339,4 +339,11 @@ export interface ITaskFilters extends IPaginationParams {
   assignee?: string;
   status?: TaskStatus;
   priority?: TaskPriority;
+}
+
+export interface NavItem {
+  title: string;
+  href: string;
+  icon: any;
+  roles: UserRole[];
 }
