@@ -1,3 +1,5 @@
+import { User } from "lucide-react";
+
 export const USER_ROLES = {
   ADMIN: "admin",
   MANAGER: "manager",
@@ -106,6 +108,9 @@ export const ROUTES = {
   REPORTS: "/reports",
   SETTINGS: "/settings",
   PROFILE: "/profile",
+  SPRINTS: "/sprints",
+  USER_MANAGEMENT: "/team/user-management",
+  TASK_MANAGEMENT: "/task-management",  
 } as const;
 
 // API endpoints

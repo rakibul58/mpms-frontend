@@ -11,6 +11,8 @@ import {
   Settings,
   ChevronLeft,
   LogOut,
+  InspectionPanel,
+  ListTodo,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -26,12 +28,18 @@ const mainNavItems = [
     title: "Dashboard",
     href: ROUTES.DASHBOARD,
     icon: LayoutDashboard,
-    roles: [USER_ROLES.ADMIN, USER_ROLES.MANAGER],
+    roles: [USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.MEMBER],
   },
   {
     title: "Projects",
     href: ROUTES.PROJECTS,
     icon: FolderKanban,
+    roles: [USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.MEMBER],
+  },
+  {
+    title: "Sprints",
+    href: ROUTES.SPRINTS,
+    icon: InspectionPanel,
     roles: [USER_ROLES.ADMIN, USER_ROLES.MANAGER, USER_ROLES.MEMBER],
   },
   {
