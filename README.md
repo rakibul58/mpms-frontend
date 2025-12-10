@@ -19,9 +19,25 @@ A modern, responsive project management dashboard built with Next.js 14, TypeScr
 
 ---
 
+## 🔗 Live Demo
+
+- **Live App:** [https://your-frontend.vercel.app](https://your-frontend.vercel.app)
+- **Backend API:** [https://your-backend.vercel.app](https://your-backend.vercel.app)
+
+### Demo Credentials
+
+| Role    | Email            | Password    |
+| ------- | ---------------- | ----------- |
+| Admin   | admin@mpms.com   | Password123 |
+| Manager | manager@mpms.com | Password123 |
+| Member  | john@mpms.com    | Password123 |
+
+---
+
 ## 🚀 Features
 
 ### User Interface
+
 - 🎨 Modern, clean design with shadcn/ui components
 - 🌓 Dark/Light theme support
 - 📱 Fully responsive design
@@ -29,24 +45,28 @@ A modern, responsive project management dashboard built with Next.js 14, TypeScr
 - 🎯 Collapsible sidebar navigation
 
 ### Authentication
+
 - 🔐 JWT-based authentication
 - 🔄 Automatic token refresh
 - 👤 Role-based access control (Admin, Manager, Member)
 - 🛡️ Protected routes
 
 ### Dashboard
+
 - 📊 Real-time statistics and metrics
 - 📈 Project progress tracking
 - ⏰ Upcoming deadlines view
 - 📋 Task distribution charts
 
 ### Project Management
+
 - 📁 Create, edit, delete projects
 - 👥 Team member management
 - 📅 Date and status tracking
 - 🔍 Search and filter capabilities
 
 ### Task Management
+
 - ✅ Create and manage tasks
 - 🏷️ Priority levels (Low, Medium, High, Urgent)
 - 📋 Status workflow (To Do → In Progress → Review → Done)
@@ -54,11 +74,13 @@ A modern, responsive project management dashboard built with Next.js 14, TypeScr
 - 📝 Subtasks support
 
 ### Team Management
+
 - 👥 View all team members
 - 🔍 Filter by role and search
 - 📧 Contact information display
 
 ### Reports
+
 - 📊 Dashboard analytics
 - 📈 Task and project statistics
 - ⏰ Time tracking reports
@@ -67,19 +89,19 @@ A modern, responsive project management dashboard built with Next.js 14, TypeScr
 
 ## 🛠️ Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| **Framework** | Next.js 14 (App Router) |
-| **Language** | TypeScript 5.x |
-| **Styling** | Tailwind CSS 3.4 |
-| **Components** | shadcn/ui + Radix UI |
-| **State Management** | Redux Toolkit + Redux Persist |
-| **Server State** | TanStack Query (React Query) v5 |
-| **Forms** | React Hook Form + Zod |
-| **HTTP Client** | Axios |
-| **Icons** | Lucide React |
-| **Date Handling** | date-fns |
-| **Theme** | next-themes |
+| Category             | Technology                      |
+| -------------------- | ------------------------------- |
+| **Framework**        | Next.js 14 (App Router)         |
+| **Language**         | TypeScript 5.x                  |
+| **Styling**          | Tailwind CSS 3.4                |
+| **Components**       | shadcn/ui + Radix UI            |
+| **State Management** | Redux Toolkit + Redux Persist   |
+| **Server State**     | TanStack Query (React Query) v5 |
+| **Forms**            | React Hook Form + Zod           |
+| **HTTP Client**      | Axios                           |
+| **Icons**            | Lucide React                    |
+| **Date Handling**    | date-fns                        |
+| **Theme**            | next-themes                     |
 
 ---
 
@@ -156,22 +178,26 @@ src/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/mpms-frontend.git
    cd mpms-frontend
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env.local
    ```
 
 4. **Configure your `.env.local` file**
+
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
    ```
@@ -187,13 +213,13 @@ The app will be available at `http://localhost:3000`
 
 ## 📜 Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint errors |
+| Script             | Description              |
+| ------------------ | ------------------------ |
+| `npm run dev`      | Start development server |
+| `npm run build`    | Build for production     |
+| `npm run start`    | Start production server  |
+| `npm run lint`     | Run ESLint               |
+| `npm run lint:fix` | Fix ESLint errors        |
 
 ---
 
@@ -201,11 +227,11 @@ The app will be available at `http://localhost:3000`
 
 After seeding the backend, use these credentials:
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@mpms.com | Password123 |
+| Role    | Email            | Password    |
+| ------- | ---------------- | ----------- |
+| Admin   | admin@mpms.com   | Password123 |
 | Manager | manager@mpms.com | Password123 |
-| Member | john@mpms.com | Password123 |
+| Member  | john@mpms.com    | Password123 |
 
 ---
 
@@ -216,6 +242,7 @@ After seeding the backend, use these credentials:
 This project uses a **hybrid approach** to state management:
 
 1. **Redux Toolkit** for:
+
    - Authentication state (user, tokens)
    - UI state (sidebar, theme preferences)
    - Persisted state across sessions
@@ -239,13 +266,13 @@ This separation provides the best of both worlds - Redux for client-side state t
 
 ### Role-Based Access
 
-| Feature | Admin | Manager | Member |
-|---------|-------|---------|--------|
-| Dashboard Stats | ✅ | ✅ | Limited |
-| Create Projects | ✅ | ✅ | ❌ |
-| Manage Team | ✅ | ✅ | ❌ |
-| View Reports | ✅ | ✅ | Own only |
-| Manage Tasks | ✅ | ✅ | Assigned |
+| Feature         | Admin | Manager | Member   |
+| --------------- | ----- | ------- | -------- |
+| Dashboard Stats | ✅    | ✅      | Limited  |
+| Create Projects | ✅    | ✅      | ❌       |
+| Manage Team     | ✅    | ✅      | ❌       |
+| View Reports    | ✅    | ✅      | Own only |
+| Manage Tasks    | ✅    | ✅      | Assigned |
 
 ---
 
@@ -256,11 +283,13 @@ This separation provides the best of both worlds - Redux for client-side state t
 1. **Push code to GitHub**
 
 2. **Import to Vercel**
+
    - Go to [vercel.com](https://vercel.com)
    - Import your GitHub repository
    - Framework Preset: Next.js (auto-detected)
 
 3. **Add Environment Variables**
+
    ```
    NEXT_PUBLIC_API_URL=https://your-backend-url.com/api/v1
    ```
@@ -281,6 +310,7 @@ npm run start
 ### Tailwind CSS
 
 The project uses a custom Tailwind configuration with:
+
 - CSS variables for theming
 - Custom color palette
 - Animation utilities
@@ -288,6 +318,7 @@ The project uses a custom Tailwind configuration with:
 ### shadcn/ui Components
 
 Components are located in `src/components/ui/` and include:
+
 - Button, Input, Label
 - Card, Badge, Avatar
 - Dialog, Select, Dropdown Menu
@@ -300,6 +331,7 @@ Components are located in `src/components/ui/` and include:
 ## 📱 Responsive Design
 
 The app is fully responsive with breakpoints:
+
 - **Mobile**: < 768px (collapsible sidebar)
 - **Tablet**: 768px - 1024px
 - **Desktop**: > 1024px
@@ -324,7 +356,7 @@ This project is licensed under the ISC License.
 
 ## 👨‍💻 Author
 
-Your Name - [GitHub](https://github.com/yourusername)
+Muhammed Rakibul Hasan - [GitHub](https://github.com/rakibul58)
 
 ---
 
