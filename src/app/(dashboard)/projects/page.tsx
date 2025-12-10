@@ -132,6 +132,7 @@ export default function ProjectsPage() {
     description: "",
     startDate: "",
     endDate: "",
+    budget: "",
     status: "planned" as ProjectStatus,
   });
 
@@ -165,11 +166,15 @@ export default function ProjectsPage() {
 
     try {
       await createProjectMutation.mutateAsync({
-        ...formData,
+        title: formData.title,
+        client: formData.client,
+        description: formData.description,
+        status: formData.status,
         startDate: new Date(formData.startDate).toISOString(),
         endDate: formData.endDate
           ? new Date(formData.endDate).toISOString()
           : undefined,
+        budget: formData.budget ? parseFloat(formData.budget) : undefined,
       });
 
       toast({
@@ -184,6 +189,7 @@ export default function ProjectsPage() {
         description: "",
         startDate: "",
         endDate: "",
+        budget: "",
         status: "planned",
       });
     } catch (error) {
@@ -281,6 +287,20 @@ export default function ProjectsPage() {
                       }
                     />
                   </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="budget">Budget ($)</Label>
+                  <Input
+                    id="budget"
+                    type="number"
+                    value={formData.budget}
+                    onChange={(e) =>
+                      setFormData({ ...formData, budget: e.target.value })
+                    }
+                    placeholder="0"
+                    min="0"
+                    step="0.01"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>

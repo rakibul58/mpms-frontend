@@ -63,12 +63,23 @@ import {
 import { getInitials } from "@/lib/utils";
 import { ITask } from "@/types";
 
+import {
+  CreateTaskDialog,
+  CreateSprintDialog,
+  AddTeamMemberDialog,
+  EditProjectDialog,
+} from "@/components/projects";
+
 export default function ProjectDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.id as string;
   const { user } = useAppSelector((state) => state.auth);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editProjectOpen, setEditProjectOpen] = useState(false);
+  const [createTaskOpen, setCreateTaskOpen] = useState(false);
+  const [createSprintOpen, setCreateSprintOpen] = useState(false);
+  const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
     undefined
   );
@@ -166,7 +177,7 @@ export default function ProjectDetailsPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setEditProjectOpen(true)}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Project
               </DropdownMenuItem>
@@ -367,7 +378,7 @@ export default function ProjectDetailsPage() {
               </select>
             </div>
             {isAdminOrManager && (
-              <Button size="sm">
+              <Button size="sm" onClick={() => setCreateTaskOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Task
               </Button>
@@ -438,7 +449,7 @@ export default function ProjectDetailsPage() {
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-medium">Project Sprints</h3>
             {isAdminOrManager && (
-              <Button size="sm">
+              <Button size="sm" onClick={() => setCreateSprintOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Sprint
               </Button>
@@ -500,7 +511,7 @@ export default function ProjectDetailsPage() {
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-medium">Team Members</h3>
             {isAdminOrManager && (
-              <Button size="sm">
+              <Button size="sm" onClick={() => setAddMemberOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Member
               </Button>
@@ -591,6 +602,43 @@ export default function ProjectDetailsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Edit Project Dialog */}
+      <EditProjectDialog
+        project={project}
+        open={editProjectOpen}
+        onOpenChange={setEditProjectOpen}
+      />
+
+      {/* Create Task Dialog */}
+      <CreateTaskDialog
+        projectId={projectId}
+        sprints={sprints}
+        teamMembers={[
+          ...(project.managers || []),
+          ...(project.teamMembers || []),
+        ]}
+        open={createTaskOpen}
+        onOpenChange={setCreateTaskOpen}
+      />
+
+      {/* Create Sprint Dialog */}
+      <CreateSprintDialog
+        projectId={projectId}
+        open={createSprintOpen}
+        onOpenChange={setCreateSprintOpen}
+      />
+
+      {/* Add Team Member Dialog */}
+      <AddTeamMemberDialog
+        projectId={projectId}
+        existingMemberIds={[
+          ...(project.managers?.map((m) => m._id) || []),
+          ...(project.teamMembers?.map((m) => m._id) || []),
+        ]}
+        open={addMemberOpen}
+        onOpenChange={setAddMemberOpen}
+      />
     </div>
   );
 }
