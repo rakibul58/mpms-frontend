@@ -56,6 +56,7 @@ export interface IProject {
   createdBy: IUser;
   teamMembers: IUser[];
   managers: IUser[];
+  progress?: number;
   createdAt: string;
   updatedAt: string;
 }

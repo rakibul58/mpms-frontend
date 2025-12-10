@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import apiClient, { handleApiError } from '@/lib/api-client';
-import { API_ENDPOINTS } from '@/lib/constants';
-import { buildQueryString } from '@/lib/utils';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import apiClient, { handleApiError } from "@/lib/api-client";
+import { API_ENDPOINTS } from "@/lib/constants";
+import { buildQueryString } from "@/lib/utils";
 import {
   ITask,
   ICreateTaskInput,
@@ -10,27 +10,45 @@ import {
   IKanbanTasks,
   IApiResponse,
   TaskStatus,
-} from '@/types';
+} from "@/types";
+
+const cleanFilters = <T extends Record<string, any>>(
+  filters: T
+): Partial<T> => {
+  return Object.entries(filters).reduce((acc, [key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      acc[key] = value;
+    }
+    return acc;
+  }, {} as any);
+};
 
 // Query keys
 export const taskKeys = {
-  all: ['tasks'] as const,
-  lists: () => [...taskKeys.all, 'list'] as const,
-  list: (filters: ITaskFilters) => [...taskKeys.lists(), filters] as const,
-  myTasks: (filters: ITaskFilters) => [...taskKeys.all, 'my-tasks', filters] as const,
-  details: () => [...taskKeys.all, 'detail'] as const,
+  all: ["tasks"] as const,
+  lists: () => [...taskKeys.all, "list"] as const,
+  list: (filters: ITaskFilters) =>
+    [...taskKeys.lists(), cleanFilters(filters)] as const,
+  myTasks: (filters: ITaskFilters) =>
+    [...taskKeys.all, "my-tasks", cleanFilters(filters)] as const,
+  details: () => [...taskKeys.all, "detail"] as const,
   detail: (id: string) => [...taskKeys.details(), id] as const,
-  byProject: (projectId: string) => [...taskKeys.all, 'project', projectId] as const,
-  bySprint: (sprintId: string) => [...taskKeys.all, 'sprint', sprintId] as const,
-  kanban: (projectId: string, sprintId?: string) => [...taskKeys.all, 'kanban', projectId, sprintId] as const,
+  byProject: (projectId: string) =>
+    [...taskKeys.all, "project", projectId] as const,
+  bySprint: (sprintId: string) =>
+    [...taskKeys.all, "sprint", sprintId] as const,
+  kanban: (projectId: string, sprintId?: string) =>
+    [...taskKeys.all, "kanban", projectId, sprintId] as const,
 };
 
 // Get all tasks with filters
 export const useTasks = (filters: Partial<ITaskFilters> = {}) => {
+  const cleanedFilters = cleanFilters(filters);
+
   return useQuery({
-    queryKey: taskKeys.list(filters),
+    queryKey: taskKeys.list(cleanedFilters as ITaskFilters),
     queryFn: async () => {
-      const queryString = buildQueryString(filters);
+      const queryString = buildQueryString(cleanedFilters);
       const { data } = await apiClient.get<IApiResponse<ITask[]>>(
         `${API_ENDPOINTS.TASKS}${queryString}`
       );
@@ -41,10 +59,12 @@ export const useTasks = (filters: Partial<ITaskFilters> = {}) => {
 
 // Get my tasks
 export const useMyTasks = (filters: Partial<ITaskFilters> = {}) => {
+  const cleanedFilters = cleanFilters(filters);
+
   return useQuery({
-    queryKey: taskKeys.myTasks(filters),
+    queryKey: taskKeys.myTasks(cleanedFilters as ITaskFilters),
     queryFn: async () => {
-      const queryString = buildQueryString(filters);
+      const queryString = buildQueryString(cleanedFilters);
       const { data } = await apiClient.get<IApiResponse<ITask[]>>(
         `${API_ENDPOINTS.MY_TASKS}${queryString}`
       );
@@ -100,7 +120,7 @@ export const useKanbanTasks = (projectId: string, sprintId?: string) => {
   return useQuery({
     queryKey: taskKeys.kanban(projectId, sprintId),
     queryFn: async () => {
-      const queryString = sprintId ? `?sprintId=${sprintId}` : '';
+      const queryString = sprintId ? `?sprintId=${sprintId}` : "";
       const { data } = await apiClient.get<IApiResponse<IKanbanTasks>>(
         `${API_ENDPOINTS.KANBAN_TASKS(projectId)}${queryString}`
       );
@@ -124,8 +144,13 @@ export const useCreateTask = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: taskKeys.all });
-      if ((data as ITask).project && typeof (data as ITask).project === 'object') {
-        queryClient.invalidateQueries({ queryKey: taskKeys.byProject((data as ITask).project._id) });
+      if (
+        (data as ITask).project &&
+        typeof (data as ITask).project === "object"
+      ) {
+        queryClient.invalidateQueries({
+          queryKey: taskKeys.byProject((data as ITask).project._id),
+        });
       }
     },
     onError: (error) => {
@@ -139,7 +164,13 @@ export const useUpdateTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data: taskData }: { id: string; data: IUpdateTaskInput }) => {
+    mutationFn: async ({
+      id,
+      data: taskData,
+    }: {
+      id: string;
+      data: IUpdateTaskInput;
+    }) => {
       const { data } = await apiClient.patch<IApiResponse<ITask>>(
         API_ENDPOINTS.TASK_BY_ID(id),
         taskData
@@ -183,7 +214,15 @@ export const useLogTime = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, hours, description }: { id: string; hours: number; description?: string }) => {
+    mutationFn: async ({
+      id,
+      hours,
+      description,
+    }: {
+      id: string;
+      hours: number;
+      description?: string;
+    }) => {
       const { data } = await apiClient.post<IApiResponse<ITask>>(
         API_ENDPOINTS.LOG_TIME(id),
         { hours, description }
@@ -191,7 +230,9 @@ export const useLogTime = () => {
       return data.data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: taskKeys.detail((data as ITask)._id) });
+      queryClient.invalidateQueries({
+        queryKey: taskKeys.detail((data as ITask)._id),
+      });
     },
     onError: (error) => {
       throw new Error(handleApiError(error));
@@ -204,7 +245,14 @@ export const useBulkUpdateTasks = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (tasks: Array<{ taskId: string; status?: TaskStatus; order?: number; sprintId?: string | null }>) => {
+    mutationFn: async (
+      tasks: Array<{
+        taskId: string;
+        status?: TaskStatus;
+        order?: number;
+        sprintId?: string | null;
+      }>
+    ) => {
       const { data } = await apiClient.patch<IApiResponse<ITask[]>>(
         API_ENDPOINTS.BULK_UPDATE_TASKS,
         { tasks }
@@ -243,7 +291,13 @@ export const useAddSubtask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ taskId, title }: { taskId: string; title: string }) => {
+    mutationFn: async ({
+      taskId,
+      title,
+    }: {
+      taskId: string;
+      title: string;
+    }) => {
       const { data } = await apiClient.post<IApiResponse<ITask>>(
         API_ENDPOINTS.SUBTASKS(taskId),
         { title }
@@ -264,10 +318,14 @@ export const useUpdateSubtask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ taskId, subtaskId, data: subtaskData }: { 
-      taskId: string; 
-      subtaskId: string; 
-      data: { title?: string; isCompleted?: boolean } 
+    mutationFn: async ({
+      taskId,
+      subtaskId,
+      data: subtaskData,
+    }: {
+      taskId: string;
+      subtaskId: string;
+      data: { title?: string; isCompleted?: boolean };
     }) => {
       const { data } = await apiClient.patch<IApiResponse<ITask>>(
         API_ENDPOINTS.SUBTASK_BY_ID(taskId, subtaskId),
@@ -289,7 +347,13 @@ export const useDeleteSubtask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ taskId, subtaskId }: { taskId: string; subtaskId: string }) => {
+    mutationFn: async ({
+      taskId,
+      subtaskId,
+    }: {
+      taskId: string;
+      subtaskId: string;
+    }) => {
       const { data } = await apiClient.delete<IApiResponse<ITask>>(
         API_ENDPOINTS.SUBTASK_BY_ID(taskId, subtaskId)
       );

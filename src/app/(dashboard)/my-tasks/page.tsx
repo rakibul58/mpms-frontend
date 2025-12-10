@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useMyTasks, useUpdateTaskStatus } from '@/hooks';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useState } from "react";
+import { useMyTasks, useUpdateTaskStatus } from "@/hooks";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { toast } from '@/components/ui/use-toast';
+} from "@/components/ui/select";
+import { toast } from "@/components/ui/use-toast";
 import {
   Search,
   Calendar,
@@ -24,8 +24,8 @@ import {
   Circle,
   Timer,
   AlertCircle,
-} from 'lucide-react';
-import { formatDate, formatRelativeTime, formatHours } from '@/lib/utils';
+} from "lucide-react";
+import { formatDate, formatRelativeTime, formatHours } from "@/lib/utils";
 import {
   TASK_STATUS,
   TASK_STATUS_LABELS,
@@ -33,36 +33,49 @@ import {
   TASK_PRIORITY,
   TASK_PRIORITY_LABELS,
   TASK_PRIORITY_COLORS,
-} from '@/lib/constants';
-import { ITask, TaskStatus, TaskPriority } from '@/types';
+} from "@/lib/constants";
+import { ITask, TaskStatus, TaskPriority } from "@/types";
 
-function TaskCard({ task, onStatusChange }: { task: ITask; onStatusChange: (status: TaskStatus) => void }) {
+function TaskCard({
+  task,
+  onStatusChange,
+}: {
+  task: ITask;
+  onStatusChange: (status: TaskStatus) => void;
+}) {
   const getStatusIcon = (status: TaskStatus) => {
     switch (status) {
-      case 'done':
+      case "done":
         return <CheckCircle2 className="h-4 w-4 text-green-500" />;
-      case 'in_progress':
+      case "in_progress":
         return <Timer className="h-4 w-4 text-blue-500" />;
-      case 'review':
+      case "review":
         return <AlertCircle className="h-4 w-4 text-yellow-500" />;
       default:
         return <Circle className="h-4 w-4 text-gray-400" />;
     }
   };
 
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
+  const isOverdue =
+    task.dueDate &&
+    new Date(task.dueDate) < new Date() &&
+    task.status !== "done";
 
   return (
-    <Card className={`hover:shadow-md transition-shadow ${isOverdue ? 'border-red-200 dark:border-red-800' : ''}`}>
+    <Card
+      className={`hover:shadow-md transition-shadow ${
+        isOverdue ? "border-red-200 dark:border-red-800" : ""
+      }`}
+    >
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <button
             onClick={() => {
               const nextStatus: Record<TaskStatus, TaskStatus> = {
-                todo: 'in_progress',
-                in_progress: 'review',
-                review: 'done',
-                done: 'todo',
+                todo: "in_progress",
+                in_progress: "review",
+                review: "done",
+                done: "todo",
               };
               onStatusChange(nextStatus[task.status]);
             }}
@@ -73,10 +86,19 @@ function TaskCard({ task, onStatusChange }: { task: ITask; onStatusChange: (stat
 
           <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-start justify-between gap-2">
-              <h3 className={`font-medium ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
+              <h3
+                className={`font-medium ${
+                  task.status === "done"
+                    ? "line-through text-muted-foreground"
+                    : ""
+                }`}
+              >
                 {task.title}
               </h3>
-              <Badge className={TASK_PRIORITY_COLORS[task.priority]} variant="outline">
+              <Badge
+                className={TASK_PRIORITY_COLORS[task.priority]}
+                variant="outline"
+              >
                 {TASK_PRIORITY_LABELS[task.priority]}
               </Badge>
             </div>
@@ -88,16 +110,20 @@ function TaskCard({ task, onStatusChange }: { task: ITask; onStatusChange: (stat
             )}
 
             <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-              {typeof task.project === 'object' && (
+              {typeof task.project === "object" && (
                 <span className="bg-muted px-2 py-1 rounded">
                   {task.project.title}
                 </span>
               )}
 
               {task.dueDate && (
-                <div className={`flex items-center gap-1 ${isOverdue ? 'text-red-500' : ''}`}>
+                <div
+                  className={`flex items-center gap-1 ${
+                    isOverdue ? "text-red-500" : ""
+                  }`}
+                >
                   <Calendar className="h-3 w-3" />
-                  <span>{formatDate(task.dueDate, 'MMM dd')}</span>
+                  <span>{formatDate(task.dueDate, "MMM dd")}</span>
                 </div>
               )}
 
@@ -117,7 +143,8 @@ function TaskCard({ task, onStatusChange }: { task: ITask; onStatusChange: (stat
 
               {task.subtasks.length > 0 && (
                 <span>
-                  {task.subtasks.filter((s) => s.isCompleted).length}/{task.subtasks.length} subtasks
+                  {task.subtasks.filter((s) => s.isCompleted).length}/
+                  {task.subtasks.length} subtasks
                 </span>
               )}
             </div>
@@ -149,43 +176,54 @@ function TaskSkeleton() {
 }
 
 export default function MyTasksPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [priorityFilter, setPriorityFilter] = useState<string>('all');
-  const [activeTab, setActiveTab] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<string>("all");
 
+  // Fetch all tasks for counts (no status filter)
+  const { data: allTasksData } = useMyTasks({
+    // Only apply search and priority to counts, not status
+    searchTerm: searchTerm || undefined,
+    priority:
+      priorityFilter !== "all" ? (priorityFilter as TaskPriority) : undefined,
+  });
+
+  // Fetch filtered tasks for display
   const { data: tasksData, isLoading } = useMyTasks({
     searchTerm: searchTerm || undefined,
-    priority: priorityFilter !== 'all' ? (priorityFilter as TaskPriority) : undefined,
-    status: activeTab !== 'all' ? (activeTab as TaskStatus) : undefined,
+    priority:
+      priorityFilter !== "all" ? (priorityFilter as TaskPriority) : undefined,
+    status: activeTab !== "all" ? (activeTab as TaskStatus) : undefined,
   });
 
   const updateStatusMutation = useUpdateTaskStatus();
 
   const tasks = tasksData?.data || [];
+  const allTasks = allTasksData?.data || [];
 
   const handleStatusChange = async (taskId: string, status: TaskStatus) => {
     try {
       await updateStatusMutation.mutateAsync({ id: taskId, status });
       toast({
-        title: 'Status Updated',
+        title: "Status Updated",
         description: `Task moved to ${TASK_STATUS_LABELS[status]}`,
       });
     } catch (error) {
       toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to update task status',
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update task status",
       });
     }
   };
 
-  // Group tasks by status for counts
+  // Calculate counts from all tasks (respecting search/priority but not status)
   const taskCounts = {
-    all: tasks.length,
-    todo: tasks.filter((t) => t.status === 'todo').length,
-    in_progress: tasks.filter((t) => t.status === 'in_progress').length,
-    review: tasks.filter((t) => t.status === 'review').length,
-    done: tasks.filter((t) => t.status === 'done').length,
+    all: allTasks.length,
+    todo: allTasks.filter((t) => t.status === "todo").length,
+    in_progress: allTasks.filter((t) => t.status === "in_progress").length,
+    review: allTasks.filter((t) => t.status === "review").length,
+    done: allTasks.filter((t) => t.status === "done").length,
   };
 
   return (
@@ -193,7 +231,9 @@ export default function MyTasksPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">My Tasks</h1>
-        <p className="text-muted-foreground">Track and manage your assigned tasks</p>
+        <p className="text-muted-foreground">
+          Track and manage your assigned tasks
+        </p>
       </div>
 
       {/* Filters */}
@@ -225,21 +265,13 @@ export default function MyTasksPage() {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="all">
-            All ({taskCounts.all})
-          </TabsTrigger>
-          <TabsTrigger value="todo">
-            To Do ({taskCounts.todo})
-          </TabsTrigger>
+          <TabsTrigger value="all">All ({taskCounts.all})</TabsTrigger>
+          <TabsTrigger value="todo">To Do ({taskCounts.todo})</TabsTrigger>
           <TabsTrigger value="in_progress">
             In Progress ({taskCounts.in_progress})
           </TabsTrigger>
-          <TabsTrigger value="review">
-            Review ({taskCounts.review})
-          </TabsTrigger>
-          <TabsTrigger value="done">
-            Done ({taskCounts.done})
-          </TabsTrigger>
+          <TabsTrigger value="review">Review ({taskCounts.review})</TabsTrigger>
+          <TabsTrigger value="done">Done ({taskCounts.done})</TabsTrigger>
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-6">
@@ -255,11 +287,11 @@ export default function MyTasksPage() {
                 <CheckCircle2 className="h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No tasks found</h3>
                 <p className="text-muted-foreground">
-                  {searchTerm || priorityFilter !== 'all'
-                    ? 'Try adjusting your filters'
-                    : activeTab === 'done'
-                    ? 'No completed tasks yet'
-                    : 'You\'re all caught up!'}
+                  {searchTerm || priorityFilter !== "all"
+                    ? "Try adjusting your filters"
+                    : activeTab === "done"
+                    ? "No completed tasks yet"
+                    : "You're all caught up!"}
                 </p>
               </CardContent>
             </Card>
@@ -269,7 +301,9 @@ export default function MyTasksPage() {
                 <TaskCard
                   key={task._id}
                   task={task}
-                  onStatusChange={(status) => handleStatusChange(task._id, status)}
+                  onStatusChange={(status) =>
+                    handleStatusChange(task._id, status)
+                  }
                 />
               ))}
             </div>
