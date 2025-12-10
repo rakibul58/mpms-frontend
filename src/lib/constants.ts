@@ -136,7 +136,7 @@ export const API_ENDPOINTS = {
   SPRINTS: "/sprints",
   SPRINTS_BY_PROJECT: (projectId: string) => `/sprints/project/${projectId}`,
   ALL_SPRINTS_BY_PROJECT: (projectId: string) =>
-    `/sprints/project/${projectId}/all`,
+    `/sprints/project/${projectId}`,
   ACTIVE_SPRINT: (projectId: string) => `/sprints/project/${projectId}/active`,
   SPRINT_BY_ID: (id: string) => `/sprints/${id}`,
   SPRINT_STATS: (id: string) => `/sprints/${id}/stats`,
@@ -159,7 +159,7 @@ export const API_ENDPOINTS = {
 
   // Comments
   COMMENTS_BY_TASK: (taskId: string) => `/comments/task/${taskId}`,
-  ALL_COMMENTS_BY_TASK: (taskId: string) => `/comments/task/${taskId}/all`,
+  ALL_COMMENTS_BY_TASK: (taskId: string) => `/comments/task/${taskId}`,
   COMMENT_BY_ID: (id: string) => `/comments/${id}`,
 
   // Reports
