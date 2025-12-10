@@ -82,13 +82,13 @@ function ProjectCard({ project }: { project: IProject }) {
             </div>
           </div>
 
-          <div className="space-y-1">
+          {/* <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Progress</span>
               <span className="font-medium">0%</span>
             </div>
             <Progress value={0} className="h-2" />
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </Link>
